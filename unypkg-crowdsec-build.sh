@@ -11,7 +11,7 @@ set -vx
 wget -qO- uny.nu/pkg | bash -s buildsys
 
 ### Installing build dependencies
-#unyp install python expat openssl
+unyp install go re2
 
 #pip3_bin=(/uny/pkg/python/*/bin/pip3)
 #"${pip3_bin[0]}" install --upgrade pip
@@ -35,7 +35,7 @@ mkdir -pv /uny/sources
 cd /uny/sources || exit
 
 pkgname="crowdsec"
-pkggit="https://github.com/crowdsec/crowdsec.git refs/tags/*"
+pkggit="https://github.com/crowdsecurity/crowdsec.git refs/tags/*"
 gitdepth="--depth=1"
 
 ### Get version info from git remote
@@ -51,9 +51,12 @@ echo "newer" >release-"$pkgname"
 
 git_clone_source_repo
 
-#cd "$pkg_git_repo_dir" || exit
-#./autogen.sh
-#cd /uny/sources || exit
+cd "$pkg_git_repo_dir" || exit
+make vendor
+rm -fv vendor.tgz
+cd /uny/sources || exit
+
+keep_git_dir=yes
 
 archiving_source
 
@@ -62,7 +65,7 @@ archiving_source
 
 # unyc - run commands in uny's chroot environment
 # shellcheck disable=SC2154
-unyc <<"UNYEOF"
+unyc #<<"UNYEOF"
 set -vx
 source /uny/git/unypkg/fn
 
@@ -77,12 +80,24 @@ get_include_paths
 
 unset LD_RUN_PATH
 
-./configure \
-    --prefix=/uny/pkg/"$pkgname"/"$pkgver"
+make BUILD_VERSION=v"$pkgver" -j"$(nproc)" build
+#make BUILD_VERSION=v"$pkgver" -j"$(nproc)" test
 
-make -j"$(nproc)"
-make -j"$(nproc)" check 
-make -j"$(nproc)" install
+mkdir -pv /uny/pkg/"$pkgname"/"$pkgver"/{bin,etc,plugins}
+cp -a cmd/crowdsec/crowdsec /uny/pkg/"$pkgname"/"$pkgver"/bin/
+cp -a cmd/crowdsec-cli/cscli /uny/pkg/"$pkgname"/"$pkgver"/bin/
+
+for plugin in cmd/notification-*/notification-*; do
+    cp -a "$plugin" /uny/pkg/"$pkgname"/"$pkgver"/bin/
+done
+for yaml in cmd/notification-*/*.yaml; do
+    cp -a "$yaml" /uny/pkg/"$pkgname"/"$pkgver"/plugins/
+done
+
+cp -a config/* /uny/pkg/"$pkgname"/"$pkgver"/etc/
+find /uny/pkg/"$pkgname"/"$pkgver"/etc/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
+
+cp -a scripts /uny/pkg/"$pkgname"/"$pkgver"/
 
 ####################################################
 ### End of individual build script
