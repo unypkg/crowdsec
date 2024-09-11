@@ -43,7 +43,7 @@ if [[ ! -d /etc/uny/crowdsec ]]; then
 fi
 
 for plugin in bin/notification-*; do
-    cp -a "$plugin" plugins/
+    mv -v "$plugin" plugins/
 done
 
 sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i etc/crowdsec.service
