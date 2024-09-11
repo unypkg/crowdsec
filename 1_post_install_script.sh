@@ -19,7 +19,7 @@ CROWDSEC_PLUGIN_DIR="${CROWDSEC_USR_DIR}/plugins"
 CROWDSEC_CONSOLE_DIR="${CROWDSEC_CONFIG_PATH}/console"
 
 if [[ ! -d /etc/uny/crowdsec ]]; then
-    cd config || exit
+    cd etc || exit
     find patterns -type f -exec install -Dm 644 "{}" "${CROWDSEC_CONFIG_PATH}/{}" \;
     cd ../ || exit
 
