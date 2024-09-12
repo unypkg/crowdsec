@@ -52,7 +52,7 @@ echo "newer" >release-"$pkgname"
 git_clone_source_repo
 
 cd "$pkg_git_repo_dir" || exit
-make vendor
+make BUILD_STATIC=1 vendor
 rm -fv vendor.tgz
 cd /uny/sources || exit
 
