@@ -78,7 +78,7 @@ get_include_paths
 ####################################################
 ### Start of individual build script
 
-unset LD_RUN_PATH
+#unset LD_RUN_PATH
 
 make BUILD_VERSION=v"$pkgver" build #BUILD_STATIC=1
 #make BUILD_VERSION=v"$pkgver" -j"$(nproc)" test
