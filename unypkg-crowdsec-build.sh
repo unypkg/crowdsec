@@ -80,7 +80,7 @@ get_include_paths
 
 unset LD_RUN_PATH
 
-make BUILD_VERSION=v"$pkgver" BUILD_STATIC=1 build
+make BUILD_VERSION=v"$pkgver" build #BUILD_STATIC=1
 #make BUILD_VERSION=v"$pkgver" -j"$(nproc)" test
 
 mkdir -pv /uny/pkg/"$pkgname"/"$pkgver"/{bin,etc,plugins}
