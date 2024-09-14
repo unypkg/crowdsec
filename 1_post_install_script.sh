@@ -26,16 +26,16 @@ if [[ ! -d /etc/uny/crowdsec ]]; then
     mkdir -pv "${CROWDSEC_CONFIG_PATH}"/{acquis.d,scenarios,postoverflows,collections,patterns,appsec-configs,appsec-rules,contexts,notifications,hub,console}
     mkdir -pv /tmp/data
 
-    install -v -m 600 -D etc/local_api_credentials.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 600 -D etc/online_api_credentials.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 600 -D etc/config.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/dev.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/user.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/acquis.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/profiles.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/simulation.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/console.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D etc/context.yaml "${CROWDSEC_CONSOLE_DIR}"
+    install -v -m 600 -D config/local_api_credentials.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 600 -D config/online_api_credentials.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 600 -D config/config.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/dev.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/user.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/acquis.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/profiles.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/simulation.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/console.yaml "${CROWDSEC_CONFIG_PATH}"
+    install -v -m 644 -D config/context.yaml "${CROWDSEC_CONSOLE_DIR}"
 
     for yaml in plugins/*.yaml; do
         mv -v "$yaml" "${CROWDSEC_CONFIG_PATH}"/notifications/
@@ -46,8 +46,8 @@ for plugin in bin/notification-*; do
     mv -v "$plugin" plugins/
 done
 
-sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i etc/crowdsec.service
-cp -a etc/crowdsec.service /etc/systemd/system/uny-crowdsec.service
+sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
+cp -a config/crowdsec.service /etc/systemd/system/uny-crowdsec.service
 #sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-mariadb.service
 sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service' -i /etc/systemd/system/uny-crowdsec.service
 systemctl daemon-reload

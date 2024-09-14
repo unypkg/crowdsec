@@ -83,7 +83,7 @@ get_include_paths
 make DEFAULT_CONFIGDIR=/etc/uny/crowdsec BUILD_VERSION=v"$pkgver" build #BUILD_STATIC=1
 #make BUILD_VERSION=v"$pkgver" -j"$(nproc)" test
 
-mkdir -pv /uny/pkg/"$pkgname"/"$pkgver"/{bin,etc,plugins}
+mkdir -pv /uny/pkg/"$pkgname"/"$pkgver"/{bin,plugins}
 cp -a cmd/crowdsec/crowdsec /uny/pkg/"$pkgname"/"$pkgver"/bin/
 cp -a cmd/crowdsec-cli/cscli /uny/pkg/"$pkgname"/"$pkgver"/bin/
 
@@ -94,8 +94,7 @@ for yaml in cmd/notification-*/*.yaml; do
     cp -a "$yaml" /uny/pkg/"$pkgname"/"$pkgver"/plugins/
 done
 
-cp -a config/* /uny/pkg/"$pkgname"/"$pkgver"/etc/
-find /uny/pkg/"$pkgname"/"$pkgver"/etc/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
+find /uny/pkg/"$pkgname"/"$pkgver"/config/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
 
 cp -a scripts /uny/pkg/"$pkgname"/"$pkgver"/
 
