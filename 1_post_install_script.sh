@@ -46,6 +46,8 @@ for plugin in bin/notification-*; do
     mv -v "$plugin" plugins/
 done
 
+bin/cscli hub update --error
+
 sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
 cp -a config/crowdsec.service /etc/systemd/system/uny-crowdsec.service
 #sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-mariadb.service
