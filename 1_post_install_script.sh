@@ -10,7 +10,7 @@ cd "$unypkg_root_dir" || exit
 #############################################################################################
 ### Start of script
 
-wizard.sh -i
+./wizard.sh -i
 
 systemctl disable crowdsec
 systemctl stop crowdsec

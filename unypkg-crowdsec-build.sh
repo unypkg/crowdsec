@@ -86,8 +86,17 @@ make DEFAULT_CONFIGDIR=/etc/uny/crowdsec BUILD_VERSION=v"$pkgver" build #BUILD_S
 
 dest_dir="/uny/pkg/$pkgname/$pkgver"
 
-mkdir -pv "$dest_dir"/
-cp -a cmd "$dest_dir"/
+mkdir -pv "$dest_dir"/cmd/{crowdsec,crowdsec-cli}
+cp -a cmd/crowdsec/crowdsec "$dest_dir"/cmd/crowdsec/
+cp -a cmd/crowdsec-cli/cscli "$dest_dir"/cmd/crowdsec-cli/
+
+for plugin in cmd/notification-*/notification-*; do
+    base_name="$(basename "$plugin")"
+    plugin_name="${base_name/notification-/}"
+    mkdir -p "$dest_dir"/cmd/"$base_name"
+    cp -a "$plugin" "$dest_dir"/cmd/"$base_name"/
+    cp -a cmd/"$base_name"/"$plugin_name".yaml "$dest_dir"/cmd/"$base_name"/
+done
 
 sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
 cp -a config "$dest_dir"/
