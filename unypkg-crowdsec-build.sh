@@ -11,7 +11,7 @@ set -vx
 wget -qO- uny.nu/pkg | bash -s buildsys
 
 ### Installing build dependencies
-unyp install go re2/2023.03.01 abseil-cpp/20220623.1 git
+unyp install go re2/2023.03.01 abseil-cpp/20220623.1 git sqlite
 #icu
 
 #pip3_bin=(/uny/pkg/python/*/bin/pip3)
@@ -84,21 +84,22 @@ get_include_paths
 make DEFAULT_CONFIGDIR=/etc/uny/crowdsec BUILD_VERSION=v"$pkgver" build #BUILD_STATIC=1
 #make BUILD_VERSION=v"$pkgver" -j"$(nproc)" test
 
-mkdir -pv /uny/pkg/"$pkgname"/"$pkgver"/{bin,plugins}
-cp -a cmd/crowdsec/crowdsec /uny/pkg/"$pkgname"/"$pkgver"/bin/
-cp -a cmd/crowdsec-cli/cscli /uny/pkg/"$pkgname"/"$pkgver"/bin/
+dest_dir="/uny/pkg/$pkgname/$pkgver"
 
-for plugin in cmd/notification-*/notification-*; do
-    cp -a "$plugin" /uny/pkg/"$pkgname"/"$pkgver"/bin/
-done
-for yaml in cmd/notification-*/*.yaml; do
-    cp -a "$yaml" /uny/pkg/"$pkgname"/"$pkgver"/plugins/
-done
+mkdir -pv "$dest_dir"/
+cp -a cmd "$dest_dir"/
 
-cp -a config /uny/pkg/"$pkgname"/"$pkgver"/
-find /uny/pkg/"$pkgname"/"$pkgver"/config/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
+sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
+cp -a config "$dest_dir"/
+find "$dest_dir"/config/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
 
-cp -a scripts /uny/pkg/"$pkgname"/"$pkgver"/
+cp -a scripts "$dest_dir"/
+
+cp -a wizard.sh "$dest_dir"/
+sed -e "s|CROWDSEC_USR_DIR=.*|CROWDSEC_USR_DIR=$dest_dir|" \
+    -e "s|BIN_INSTALL_PATH=.*|BIN_INSTALL_PATH=$dest_dir/bin|" \
+    -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" \
+    -i "$dest_dir"/wizard.sh
 
 ####################################################
 ### End of individual build script

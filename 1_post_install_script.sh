@@ -10,47 +10,13 @@ cd "$unypkg_root_dir" || exit
 #############################################################################################
 ### Start of script
 
-CROWDSEC_LIB_DIR="/var/lib/crowdsec"
-CROWDSEC_USR_DIR="$unypkg_root_dir"
-CROWDSEC_DATA_DIR="${CROWDSEC_LIB_DIR}/data"
-CROWDSEC_DB_PATH="${CROWDSEC_DATA_DIR}/crowdsec.db"
-CROWDSEC_CONFIG_PATH="/etc/uny/crowdsec"
-CROWDSEC_PLUGIN_DIR="${CROWDSEC_USR_DIR}/plugins"
-CROWDSEC_CONSOLE_DIR="${CROWDSEC_CONFIG_PATH}/console"
+wizard.sh -i
 
-if [[ ! -d /etc/uny/crowdsec ]]; then
-    cd config || exit
-    find patterns -type f -exec install -Dm 644 "{}" "${CROWDSEC_CONFIG_PATH}/{}" \;
-    cd ../ || exit
+systemctl disable crowdsec
+systemctl stop crowdsec
 
-    mkdir -pv "${CROWDSEC_CONFIG_PATH}"/{acquis.d,scenarios,postoverflows,collections,patterns,appsec-configs,appsec-rules,contexts,notifications,hub,console}
-    mkdir -pv /tmp/data
-
-    install -v -m 600 -D config/local_api_credentials.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 600 -D config/online_api_credentials.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 600 -D config/config.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/dev.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/user.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/acquis.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/profiles.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/simulation.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/console.yaml "${CROWDSEC_CONFIG_PATH}"
-    install -v -m 644 -D config/context.yaml "${CROWDSEC_CONSOLE_DIR}"
-
-    for yaml in plugins/*.yaml; do
-        mv -v "$yaml" "${CROWDSEC_CONFIG_PATH}"/notifications/
-    done
-fi
-
-for plugin in bin/notification-*; do
-    mv -v "$plugin" plugins/
-done
-
-bin/cscli hub update --error
-
-sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
-cp -a config/crowdsec.service /etc/systemd/system/uny-crowdsec.service
-#sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-mariadb.service
+mv -f /etc/systemd/system/crowdsec.service /etc/systemd/system/uny-crowdsec.service
+sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-mariadb.service
 sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service' -i /etc/systemd/system/uny-crowdsec.service
 systemctl daemon-reload
 
