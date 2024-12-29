@@ -94,6 +94,7 @@ for yaml in cmd/notification-*/*.yaml; do
     cp -a "$yaml" /uny/pkg/"$pkgname"/"$pkgver"/plugins/
 done
 
+cp -a config /uny/pkg/"$pkgname"/"$pkgver"/
 find /uny/pkg/"$pkgname"/"$pkgver"/config/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
 
 cp -a scripts /uny/pkg/"$pkgname"/"$pkgver"/
