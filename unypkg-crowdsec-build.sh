@@ -11,7 +11,8 @@ set -vx
 wget -qO- uny.nu/pkg | bash -s buildsys
 
 ### Installing build dependencies
-unyp install go re2/2023.03.01 abseil-cpp/20220623.1 git #icu
+unyp install go re2/2023.03.01 abseil-cpp/20220623.1 git
+#icu
 
 #pip3_bin=(/uny/pkg/python/*/bin/pip3)
 #"${pip3_bin[0]}" install --upgrade pip
