@@ -101,6 +101,7 @@ done
 sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
 cp -a config "$dest_dir"/
 find "$dest_dir"/config/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
+sed "s|listen_uri: 127.0.0.1:8080|listen_uri: 127.0.0.1:6066|" -i "$dest_dir"/config/config.yaml
 
 cp -a scripts "$dest_dir"/
 
