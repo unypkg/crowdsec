@@ -12,12 +12,18 @@ cd "$unypkg_root_dir" || exit
 
 ./wizard.sh -i --unattended
 
-systemctl disable crowdsec
-systemctl stop crowdsec
+if [ ! -f /etc/systemd/system/uny-crowdsec.service ]; then
+    if systemctl is-active crowdsec -q; then
+        systemctl stop crowdsec
+        if systemctl is-enabled crowdsec -q; then
+            systemctl disable crowdsec
+        fi
+    fi
+fi
 
-mv -f etc/systemd/system/crowdsec.service /etc/systemd/system/uny-crowdsec.service
-sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-mariadb.service
-sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service' -i /etc/systemd/system/uny-crowdsec.service
+cp -f config/crowdsec.service /etc/systemd/system/uny-crowdsec.service
+sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-crowdsec.service
+sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service cs.service' -i /etc/systemd/system/uny-crowdsec.service
 systemctl daemon-reload
 
 #############################################################################################
