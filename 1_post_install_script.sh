@@ -15,7 +15,7 @@ cd "$unypkg_root_dir" || exit
 systemctl disable crowdsec
 systemctl stop crowdsec
 
-mv -f /etc/systemd/system/crowdsec.service /etc/systemd/system/uny-crowdsec.service
+mv -f etc/systemd/system/crowdsec.service /etc/systemd/system/uny-crowdsec.service
 sed "s|.*Alias=.*||g" -i /etc/systemd/system/uny-mariadb.service
 sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service' -i /etc/systemd/system/uny-crowdsec.service
 systemctl daemon-reload
