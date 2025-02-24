@@ -99,7 +99,7 @@ for plugin in cmd/notification-*/notification-*; do
 done
 
 sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
-sed '/\[Install\]/a\' -e 'Alias=crowdsec.service cs.service' -i config/crowdsec.service
+sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service cs.service' -i config/crowdsec.service
 mv -v config/crowdsec.service config/uny-crowdsec.service
 
 cp -a config "$dest_dir"/
