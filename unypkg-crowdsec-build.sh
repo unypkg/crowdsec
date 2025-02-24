@@ -113,7 +113,12 @@ sed -e "s|CROWDSEC_USR_DIR=.*|CROWDSEC_USR_DIR=$dest_dir|" \
     -e "s|BIN_INSTALL_PATH=.*|BIN_INSTALL_PATH=$dest_dir/bin|" \
     -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" \
     -e "s|crowdsec.service|uny-crowdsec.service|g" \
-    -i "$dest_dir"/wizard.sh
+    -e "s|systemctl restart crowdsec|systemctl restart uny-crowdsec|g" \
+    -e "s|systemctl stop crowdsec|systemctl stop uny-crowdsec|g" \
+    -e "s|systemctl enable -q crowdsec|systemctl enable -q uny-crowdsec|g" \
+    -e "s|systemctl start crowdsec|systemctl start uny-crowdsec|g" \
+    -i "$dest_dir"/wizard.sh \
+    "$dest_dir"/scripts/test_wizard_upgrade.sh
 
 ####################################################
 ### End of individual build script
