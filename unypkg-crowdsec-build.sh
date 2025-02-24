@@ -99,6 +99,9 @@ for plugin in cmd/notification-*/notification-*; do
 done
 
 sed -r "s|=/bin/(.*)|=/usr/bin/env bash -c \"\1\"|" -i config/crowdsec.service
+sed '/\[Install\]/a\' -e 'Alias=crowdsec.service cs.service' -i config/crowdsec.service
+mv -v config/crowdsec.service config/uny-crowdsec.service
+
 cp -a config "$dest_dir"/
 find "$dest_dir"/config/ -type f -exec sed -i -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" -e "s|/usr/local|/uny/pkg/$pkgname/$pkgver|g" {} +
 sed "s|listen_uri: 127.0.0.1:8080|listen_uri: 127.0.0.1:6066|" -i "$dest_dir"/config/config.yaml
@@ -109,6 +112,7 @@ cp -a wizard.sh "$dest_dir"/
 sed -e "s|CROWDSEC_USR_DIR=.*|CROWDSEC_USR_DIR=$dest_dir|" \
     -e "s|BIN_INSTALL_PATH=.*|BIN_INSTALL_PATH=$dest_dir/bin|" \
     -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" \
+    -e "s|crowdsec.service|uny-crowdsec.service|g"
     -i "$dest_dir"/wizard.sh
 
 ####################################################

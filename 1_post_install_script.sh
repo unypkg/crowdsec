@@ -14,8 +14,9 @@ if ! command -v envsubst >/dev/null && [ ! -f "$(command -v envsubst)" ]; then
     unyp system-install gettext
 fi
 
-sed -e '/\[Install\]/a\' -e 'Alias=crowdsec.service cs.service' -i config/crowdsec.service
-sed -e "s|/etc/systemd/system/crowdsec.service|/etc/systemd/system/uny-crowdsec.service|" -i ./wizard.sh
+[ -L /usr/bin/crowdsec ] && rm -f /usr/bin/crowdsec
+[ -L /usr/bin/cscli ] && rm -f /usr/bin/cscli
+
 ./wizard.sh -i --unattended
 
 #if [ ! -f /etc/systemd/system/uny-crowdsec.service ]; then
