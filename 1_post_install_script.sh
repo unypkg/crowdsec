@@ -10,6 +10,10 @@ cd "$unypkg_root_dir" || exit
 #############################################################################################
 ### Start of script
 
+if ! command -v envsubst && [ ! -f "$(command -v envsubst)" ]; then
+    unyp system-install gettext
+fi
+
 ./wizard.sh -i --unattended
 
 if [ ! -f /etc/systemd/system/uny-crowdsec.service ]; then
