@@ -112,7 +112,7 @@ cp -a wizard.sh "$dest_dir"/
 sed -e "s|CROWDSEC_USR_DIR=.*|CROWDSEC_USR_DIR=$dest_dir|" \
     -e "s|BIN_INSTALL_PATH=.*|BIN_INSTALL_PATH=$dest_dir/bin|" \
     -e "s|/etc/crowdsec|/etc/uny/crowdsec|g" \
-    -e "s|crowdsec.service|uny-crowdsec.service|g"
+    -e "s|crowdsec.service|uny-crowdsec.service|g" \
     -i "$dest_dir"/wizard.sh
 
 ####################################################
