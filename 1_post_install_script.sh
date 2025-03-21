@@ -10,7 +10,8 @@ cd "$unypkg_root_dir" || exit
 #############################################################################################
 ### Start of script
 
-if ! command -v envsubst >/dev/null || [ ! "$(command -v envsubst)" == "" ]; then
+if ! command -v envsubst >/dev/null; then
+    unyp install gettext
     unyp system-install gettext
 fi
 
