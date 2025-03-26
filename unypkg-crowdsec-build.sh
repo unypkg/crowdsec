@@ -120,6 +120,8 @@ sed -e "s|CROWDSEC_USR_DIR=.*|CROWDSEC_USR_DIR=$dest_dir|" \
     -i "$dest_dir"/wizard.sh \
     "$dest_dir"/scripts/test_wizard_upgrade.sh
 
+sed "s|UNY_VERSION|$pkgver|g" -i /home/runner/work/"$pkg"/"$pkg"/1_post_install_script.sh
+
 ####################################################
 ### End of individual build script
 
