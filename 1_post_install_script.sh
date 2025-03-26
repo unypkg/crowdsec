@@ -412,7 +412,7 @@ show_link() {
 
 # Beginning if commands
 
-if command -v envsubst >/dev/null; then
+if ! command -v envsubst >/dev/null; then
     log_fatal "envsubst binary is needed to use do a full install with the wizard, exiting ..."
 fi
 
