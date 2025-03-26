@@ -153,7 +153,7 @@ install_plugins() {
 
     for yaml_conf in ${SLACK_PLUGIN_CONFIG} ${SPLUNK_PLUGIN_CONFIG} ${HTTP_PLUGIN_CONFIG} ${EMAIL_PLUGIN_CONFIG} ${SENTINEL_PLUGIN_CONFIG} ${FILE_PLUGIN_CONFIG}; do
         if [[ ! -s /etc/crowdsec/notifications/"$(basename "$yaml_conf")" ]]; then
-            cp "$yaml_conf" /etc/crowdsec/notifications/
+            cp "$yaml_conf" /etc/uny/crowdsec/notifications/
         fi
     done
 }
