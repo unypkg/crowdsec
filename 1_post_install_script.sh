@@ -122,6 +122,15 @@ log_dbg() {
     fi
 }
 
+detect_cs_install() {
+    if [[ -f "$CROWDSEC_BIN_INSTALLED" ]]; then
+        log_warn "Crowdsec is already installed! Aborting."
+        if [[ ${FORCE_MODE} == "false" ]]; then
+            exit 1
+        fi
+    fi
+}
+
 symlink_bins() {
     if grep -q "${BIN_INSTALL_PATH}" <<<"$PATH"; then
         log_dbg "${BIN_INSTALL_PATH} found in PATH"
@@ -343,7 +352,7 @@ genacquisition() {
             genyamllog "${PSVG}" "${DETECTED_LOGFILES[@]}"
         elif [[ ${PSVG} != "linux" ]]; then
             log_info "using journald for '${PSVG}'"
-            genyamljournal ${PSVG}
+            genyamljournal "${PSVG}"
         fi
     done
 }
